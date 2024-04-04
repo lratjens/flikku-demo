@@ -1,0 +1,12 @@
+# Exported from Render on 2024-04-04T00:53:23Z
+databases:
+- name: flikku-pg-singapore
+  databaseName: flikku
+  user: flikku_user
+  plan: free
+  region: singapore
+  ipAllowList:
+  - source: 0.0.0.0/0
+    description: everywhere
+  postgresMajorVersion: "16"
+version: "1"
