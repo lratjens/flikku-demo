@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
+import spacy
 
 
 def scrape_script(url):
@@ -15,7 +17,11 @@ def scrape_script(url):
         return f"Error: {e}"
 
 
-def main():
+def split_script(script):
+    return script.replace('\r\n', '\n').replace('\n\n', '\n').split('\n')
+
+
+def get_scripts():
     urls = [
         "https://imsdb.com/scripts/Tenet.html"
         ,"https://imsdb.com/scripts/Top-Gun.html"
@@ -46,8 +52,15 @@ def main():
         ,"https://imsdb.com/scripts/Sixth-Sense,-The.html"
         ,"https://imsdb.com/scripts/Bourne-Identity,-The.html"
     ]
-    scripts = {url.split('/')[-1].split('.')[0]: scrape_script(url) for url in urls}
-
-
-if __name__ == '__main__':
-    main()
+    scripts_dict = {url.split('/')[-1].split('.')[0]: scrape_script(url) for url in urls}
+    nlp = spacy.load("en_core_web_md")
+    data = []
+    for title, script in scripts_dict.items():
+        lines = split_script(script)
+        for idx, line in enumerate(lines):
+            doc = nlp(line)
+            vector = doc.vector
+            data.append({'Title': title, 'Line ID': idx, 'Line Text': line, 'Vector Data': vector})
+    
+    scripts_df = pd.DataFrame(data)
+    return scripts_df
