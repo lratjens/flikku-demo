@@ -47,8 +47,6 @@ def get_scripts():
         ,"https://imsdb.com/scripts/Sixth-Sense,-The.html"
         ,"https://imsdb.com/scripts/Bourne-Identity,-The.html"
     ]
-    # scripts = {url.split('/')[-1].split('.')[0]: scrape_script(url) for url in urls}
-    # return scripts
     records = []
     for url in urls:
         title = url.split('/')[-1].split('.')[0]
