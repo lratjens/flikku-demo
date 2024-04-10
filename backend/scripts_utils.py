@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-import spacy
 
 
 def scrape_script(url):
@@ -10,15 +9,11 @@ def scrape_script(url):
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'html.parser')
             script_tag = soup.find('pre')
-            return script_tag.get_text(strip=True) if script_tag else "Script not found"
+            return script_tag.get_text() if script_tag else "Script not found"
         else:
             return "Failed to access URL"
     except Exception as e:
         return f"Error: {e}"
-
-
-def split_script(script):
-    return script.replace('\r\n', '\n').replace('\n\n', '\n').split('\n')
 
 
 def get_scripts():
@@ -52,15 +47,13 @@ def get_scripts():
         ,"https://imsdb.com/scripts/Sixth-Sense,-The.html"
         ,"https://imsdb.com/scripts/Bourne-Identity,-The.html"
     ]
-    scripts_dict = {url.split('/')[-1].split('.')[0]: scrape_script(url) for url in urls}
-    nlp = spacy.load("en_core_web_md")
-    data = []
-    for title, script in scripts_dict.items():
-        lines = split_script(script)
-        for idx, line in enumerate(lines):
-            doc = nlp(line)
-            vector = doc.vector
-            data.append({'Title': title, 'Line ID': idx, 'Line Text': line, 'Vector Data': vector})
-    
-    scripts_df = pd.DataFrame(data)
+    # scripts = {url.split('/')[-1].split('.')[0]: scrape_script(url) for url in urls}
+    # return scripts
+    records = []
+    for url in urls:
+        title = url.split('/')[-1].split('.')[0]
+        script_text = scrape_script(url)
+        records.append({'title': title, 'url': url, 'script': script_text})
+    scripts_df = pd.DataFrame(records, columns=['title', 'url', 'script'])
     return scripts_df
+
