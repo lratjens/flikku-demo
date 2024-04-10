@@ -1,3 +1,6 @@
 psycopg2-binary==2.9.9
 python-dotenv==1.0.1
-spacy==3.7.4
+langchain==0.1.15
+openai==1.16.2
+chromadb==0.4.24
+langchainhub==0.1.15
